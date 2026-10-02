@@ -111,7 +111,7 @@ void USB_EP0_SETUP() {
           len = pDescr[0];
           break;
         case 0x22:
-          if (UsbSetupBuf->wValueL == 2) {
+          if (UsbSetupBuf->wValueL == 0) {
             pDescr = (__code uint8_t *)ReportDescriptor;
             len = ConfigurationDescriptor.HID_KeyboardHID.HIDReportLength;
           } else {
