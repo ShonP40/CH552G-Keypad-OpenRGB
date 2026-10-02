@@ -2,8 +2,8 @@
 
 ## About This Fork
 
-- the firmware has one fixed configuration: F16, F17, F18 and F19
-- encoder clockwise and counter-clockwise steps send F20 and F21 respectively
+- the firmware has one fixed configuration: F14, F15, F16 and F19
+- encoder clockwise and counter-clockwise steps send F17 and F18 respectively
 - the three LEDs retain white-on-press feedback and have independent RGB state
 - OpenRGB can control the LEDs through the Adalight serial protocol
 - all the other features from the original repo's default configuration examples should still work, except for AUTO_KEYBOARD and AUTO_MOUSE

@@ -7,7 +7,7 @@ const keyboard_configuration_t configurations[NUM_CONFIGURATION] = {
             [BTN_1] = {
                 .type = BUTTON_SEQUENCE,
                 .function.sequence = {
-                    .sequence = {KEY_F16},
+                    .sequence = {KEY_F14},
                     .length = 1,
                     .delay = 0
                 }
@@ -15,7 +15,7 @@ const keyboard_configuration_t configurations[NUM_CONFIGURATION] = {
             [BTN_2] = {
                 .type = BUTTON_SEQUENCE,
                 .function.sequence = {
-                    .sequence = {KEY_F17},
+                    .sequence = {KEY_F15},
                     .length = 1,
                     .delay = 0
                 }
@@ -23,7 +23,7 @@ const keyboard_configuration_t configurations[NUM_CONFIGURATION] = {
             [BTN_3] = {
                 .type = BUTTON_SEQUENCE,
                 .function.sequence = {
-                    .sequence = {KEY_F18},
+                    .sequence = {KEY_F16},
                     .length = 1,
                     .delay = 0
                 }
@@ -31,7 +31,7 @@ const keyboard_configuration_t configurations[NUM_CONFIGURATION] = {
             [ENC_CW] = {
                 .type = BUTTON_SEQUENCE,
                 .function.sequence = {
-                    .sequence = {KEY_F20},
+                    .sequence = {KEY_F17},
                     .length = 1,
                     .delay = 0
                 }
@@ -39,7 +39,7 @@ const keyboard_configuration_t configurations[NUM_CONFIGURATION] = {
             [ENC_CCW] = {
                 .type = BUTTON_SEQUENCE,
                 .function.sequence = {
-                    .sequence = {KEY_F21},
+                    .sequence = {KEY_F18},
                     .length = 1,
                     .delay = 0
                 }
