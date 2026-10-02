@@ -6,11 +6,14 @@
 #include "include/ch5xx.h"
 #include "include/ch5xx_usb.h"
 #include "usbCommonDescriptors/StdDescriptors.h"
+#include "usbCommonDescriptors/CDCClassCommon.h"
 #include "usbCommonDescriptors/HIDClassCommon.h"
 // clang-format on
 
 #define EP0_ADDR 0
 #define EP1_ADDR 10
+#define EP2_ADDR 138
+#define EP3_ADDR 202
 
 #define KEYBOARD_EPADDR 0x81
 #define KEYBOARD_LED_EPADDR 0x01
@@ -23,6 +26,16 @@
  */
 typedef struct {
   USB_Descriptor_Configuration_Header_t Config;
+
+  USB_Descriptor_Interface_Association_t CDC_IAD;
+  USB_Descriptor_Interface_t CDC_ControlInterface;
+  USB_CDC_Descriptor_FunctionalHeader_t CDC_FunctionalHeader;
+  USB_CDC_Descriptor_FunctionalACM_t CDC_ACM;
+  USB_CDC_Descriptor_FunctionalUnion_t CDC_Union;
+  USB_Descriptor_Endpoint_t CDC_NotificationEndpoint;
+  USB_Descriptor_Interface_t CDC_DataInterface;
+  USB_Descriptor_Endpoint_t CDC_DataOUTEndpoint;
+  USB_Descriptor_Endpoint_t CDC_DataINEndpoint;
 
   // Keyboard HID Interface
   USB_Descriptor_Interface_t HID_Interface;

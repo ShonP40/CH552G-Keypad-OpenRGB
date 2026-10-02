@@ -11,6 +11,10 @@ static bool color_rgb_s[3] = {false, false, false};
 static uint8_t color_red_s[3] = {0, 0, 0};
 static uint8_t color_green_s[3] = {0, 0, 0};
 static uint8_t color_blue_s[3] = {0, 0, 0};
+static bool serial_pending_s = false;
+static uint8_t serial_red_s[3] = {0, 0, 0};
+static uint8_t serial_green_s[3] = {0, 0, 0};
+static uint8_t serial_blue_s[3] = {0, 0, 0};
 static int curretn_key_s = -1;         // current press key
 static int led_brightness_s = NEO_DIM_KEYS; // brightness of keys
 
@@ -36,6 +40,31 @@ void led_set_color_rgb(uint8_t led, uint8_t red, uint8_t green, uint8_t blue)
   color_red_s[led] = red;
   color_green_s[led] = green;
   color_blue_s[led] = blue;
+}
+
+void led_serial_set_colors(const uint8_t *colors)
+{
+  for (uint8_t led = 0; led < 3; led++)
+  {
+    serial_red_s[led] = colors[led * 3];
+    serial_green_s[led] = colors[led * 3 + 1];
+    serial_blue_s[led] = colors[led * 3 + 2];
+  }
+  serial_pending_s = true;
+}
+
+void led_serial_update()
+{
+  if (!serial_pending_s)
+  {
+    return;
+  }
+
+  for (uint8_t led = 0; led < 3; led++)
+  {
+    led_set_color_rgb(led, serial_red_s[led], serial_green_s[led], serial_blue_s[led]);
+  }
+  serial_pending_s = false;
 }
 
 void led_presskey(int key)

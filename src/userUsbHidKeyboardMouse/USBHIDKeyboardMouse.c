@@ -6,11 +6,14 @@
 #include "include/ch5xx_usb.h"
 #include "USBconstant.h"
 #include "USBhandler.h"
+#include "../led.h"
 // clang-format on
 
 // clang-format off
 extern __xdata __at (EP0_ADDR) uint8_t Ep0Buffer[];
 extern __xdata __at (EP1_ADDR) uint8_t Ep1Buffer[];
+__xdata __at (EP2_ADDR) uint8_t Ep2Buffer[64];
+__xdata __at (EP3_ADDR) uint8_t Ep3Buffer[64];
 // clang-format on
 
 volatile __xdata uint8_t UpPoint1_Busy =
@@ -175,6 +178,66 @@ void USB_EP1_OUT() {
   if (U_TOG_OK) // Discard unsynchronized packets
   {
   }
+}
+
+static uint8_t adalight_state_s = 0;
+static uint16_t adalight_length_s = 0;
+static uint16_t adalight_index_s = 0;
+static uint8_t adalight_checksum_s = 0;
+static uint8_t adalight_colors_s[9];
+
+static void adalight_receive(uint8_t value)
+{
+  switch (adalight_state_s)
+  {
+  case 0: adalight_state_s = value == 'A' ? 1 : 0; break;
+  case 1: adalight_state_s = value == 'd' ? 2 : (value == 'A' ? 1 : 0); break;
+  case 2: adalight_state_s = value == 'a' ? 3 : (value == 'A' ? 1 : 0); break;
+  case 3:
+    adalight_length_s = (uint16_t)value << 8;
+    adalight_checksum_s = value;
+    adalight_state_s = 4;
+    break;
+  case 4:
+    adalight_length_s |= value;
+    adalight_checksum_s ^= value;
+    adalight_state_s = adalight_length_s == 3 ? 5 : 0;
+    break;
+  case 5:
+    adalight_checksum_s ^= value;
+    adalight_state_s = adalight_checksum_s == 0x55 ? 6 : 0;
+    adalight_index_s = 0;
+    break;
+  case 6:
+    adalight_colors_s[adalight_index_s++] = value;
+    if (adalight_index_s == sizeof(adalight_colors_s))
+    {
+      led_serial_set_colors(adalight_colors_s);
+      adalight_state_s = 0;
+    }
+    break;
+  default:
+    adalight_state_s = 0;
+    break;
+  }
+}
+
+void USB_EP3_OUT()
+{
+  if (U_TOG_OK)
+  {
+    for (uint8_t i = 0; i < USB_RX_LEN; i++)
+    {
+      adalight_receive(Ep3Buffer[i]);
+    }
+  }
+  UEP3_CTRL = UEP3_CTRL & ~MASK_UEP_R_RES | UEP_R_RES_ACK;
+}
+
+void USB_EP3_IN()
+{
+  UEP3_T_LEN = 0;
+  UEP3_CTRL = UEP3_CTRL & ~MASK_UEP_T_RES | UEP_T_RES_NAK;
 }
 
 uint8_t USB_EP1_send(__data uint8_t reportID) {

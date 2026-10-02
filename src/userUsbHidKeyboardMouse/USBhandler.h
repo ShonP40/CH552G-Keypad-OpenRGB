@@ -11,6 +11,8 @@
 // clang-format off
 extern __xdata __at (EP0_ADDR) uint8_t Ep0Buffer[];
 extern __xdata __at (EP1_ADDR) uint8_t Ep1Buffer[];
+extern __xdata __at (EP2_ADDR) uint8_t Ep2Buffer[];
+extern __xdata __at (EP3_ADDR) uint8_t Ep3Buffer[];
 // clang-format on
 
 extern __data uint16_t SetupLen;
@@ -21,6 +23,8 @@ extern const __code uint8_t *__data pDescr;
 
 void USB_EP1_IN();
 void USB_EP1_OUT();
+void USB_EP3_OUT();
+void USB_EP3_IN();
 
 #define UsbSetupBuf ((PUSB_SETUP_REQ)Ep0Buffer)
 
@@ -28,7 +32,7 @@ void USB_EP1_OUT();
 #define EP0_OUT_Callback USB_EP0_OUT
 #define EP1_OUT_Callback USB_EP1_OUT
 #define EP2_OUT_Callback NOP_Process
-#define EP3_OUT_Callback NOP_Process
+#define EP3_OUT_Callback USB_EP3_OUT
 #define EP4_OUT_Callback NOP_Process
 
 // SOF
@@ -42,7 +46,7 @@ void USB_EP1_OUT();
 #define EP0_IN_Callback USB_EP0_IN
 #define EP1_IN_Callback USB_EP1_IN
 #define EP2_IN_Callback NOP_Process
-#define EP3_IN_Callback NOP_Process
+#define EP3_IN_Callback USB_EP3_IN
 #define EP4_IN_Callback NOP_Process
 
 // SETUP

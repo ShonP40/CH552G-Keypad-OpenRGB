@@ -16,8 +16,8 @@ __xdata __at (EP0_ADDR) uint8_t Ep0Buffer[8];
 __xdata __at (EP1_ADDR) uint8_t Ep1Buffer[128];       //on page 47 of data sheet, the receive buffer need to be min(possible packet size+2,64), IN and OUT buffer, must be even address
 // clang-format on
 
-#if (EP1_ADDR + 128) > USER_USB_RAM
-#error "This example needs more USB ram. Increase this setting in menu."
+#if (EP3_ADDR + 64) > USER_USB_RAM
+#error "Keyboard plus OpenRGB serial needs the larger USB RAM setting."
 #endif
 
 __data uint16_t SetupLen;
@@ -55,6 +55,20 @@ void USB_EP0_SETUP() {
       }
       case USB_REQ_TYP_CLASS: {
         switch (SetupReq) {
+        case 0x20: // CDC_SET_LINE_CODING
+        case 0x22: // CDC_SET_CONTROL_LINE_STATE
+          len = 0;
+          break;
+        case 0x21: // CDC_GET_LINE_CODING
+          Ep0Buffer[0] = 0x00;
+          Ep0Buffer[1] = 0xC2;
+          Ep0Buffer[2] = 0x01;
+          Ep0Buffer[3] = 0x00;
+          Ep0Buffer[4] = 0x00;
+          Ep0Buffer[5] = 0x00;
+          Ep0Buffer[6] = 0x08;
+          len = 7;
+          break;
         default:
           len = 0xFF; // command not supported
           break;
@@ -82,7 +96,7 @@ void USB_EP0_SETUP() {
           len = sizeof(USB_Descriptor_Configuration_t);
           break;
         case 3:
-          if (UsbSetupBuf->wValueL == 0) {
+          if (UsbSetupBuf->wValueL == 2) {
             pDescr = LanguageDescriptor;
           } else if (UsbSetupBuf->wValueL == 1) {
             pDescr = (__code uint8_t *)ManufacturerDescriptor;
@@ -436,6 +450,8 @@ void USBInterrupt(void) { // inline not really working in multiple files in SDCC
   if (UIF_BUS_RST) {
     UEP0_CTRL = UEP_R_RES_ACK | UEP_T_RES_NAK;
     UEP1_CTRL = bUEP_AUTO_TOG | UEP_T_RES_NAK | UEP_R_RES_ACK;
+    UEP2_CTRL = bUEP_AUTO_TOG | UEP_T_RES_NAK | UEP_R_RES_ACK;
+    UEP3_CTRL = bUEP_AUTO_TOG | UEP_T_RES_NAK | UEP_R_RES_ACK;
 
     USB_DEV_AD = 0x00;
     UIF_SUSPEND = 0;
@@ -506,12 +522,17 @@ void USBDeviceEndPointCfg() {
 #else
   UEP0_DMA = (uint16_t)Ep0Buffer; // Endpoint 0 data transfer address
   UEP1_DMA = (uint16_t)Ep1Buffer; // Endpoint 1 data transfer address
+  UEP2_DMA = (uint16_t)Ep2Buffer;
+  UEP3_DMA = (uint16_t)Ep3Buffer;
 #endif
 
   UEP1_CTRL = bUEP_AUTO_TOG | UEP_T_RES_NAK |
               UEP_R_RES_ACK; // Endpoint 2 automatically flips the sync flag, IN
                              // transaction returns NAK, OUT returns ACK
-  UEP4_1_MOD = 0XC0;         // endpoint1 TX RX enable
+  UEP4_1_MOD = bUEP1_TX_EN | bUEP1_RX_EN;
+  UEP2_3_MOD = bUEP2_TX_EN | bUEP2_RX_EN | bUEP3_TX_EN | bUEP3_RX_EN;
+  UEP2_CTRL = bUEP_AUTO_TOG | UEP_T_RES_NAK | UEP_R_RES_ACK;
+  UEP3_CTRL = bUEP_AUTO_TOG | UEP_T_RES_NAK | UEP_R_RES_ACK;
   UEP0_CTRL =
       UEP_R_RES_ACK | UEP_T_RES_NAK; // Manual flip, OUT transaction returns
                                      // ACK, IN transaction returns NAK

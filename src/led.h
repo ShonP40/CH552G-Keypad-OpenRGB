@@ -18,6 +18,10 @@ void led_set_color_hue(uint8_t led0, uint8_t led1, uint8_t led2, int led_brightn
 // Set the persistent RGB color for each pixel independently.
 void led_set_color_rgb(uint8_t led, uint8_t red, uint8_t green, uint8_t blue);
 
+// Apply colors received from the OpenRGB serial transport.
+void led_serial_update();
+void led_serial_set_colors(const uint8_t *colors);
+
 // update led task
 void led_update();
 

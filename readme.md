@@ -5,6 +5,7 @@
 - the firmware has one fixed configuration: F16, F17, F18 and F19
 - encoder clockwise and counter-clockwise steps send F20 and F21 respectively
 - the three LEDs retain white-on-press feedback and have independent RGB state
+- OpenRGB can control the LEDs through the Adalight serial protocol
 - all the other features from the original repo's default configuration examples should still work, except for AUTO_KEYBOARD and AUTO_MOUSE
 
 *NOTE: Code space was limited enough that I had to compromise on the configuration. Being able to switch between more buttons (arguably a ridiculous number now!) seemed more useful than the knob as a mappable input, especially since the Arduino doesn't have a way to map it to the media keys (like volume) by default. There are extra libraries that could be used for that, or it could be hard-coded, but given the free space this seemed impossible anyway.*
@@ -64,6 +65,28 @@ This firmware uses the Arduino platform to simplify the build process. I built i
 4. Compile the project.
 5. Set the keyboard in bootloader mode (see below).
 6. Flash the project. (*Original firmware will be completed lost*)
+
+Because the OpenRGB serial interface uses additional USB endpoint buffers, select
+the largest available `USER CODE` USB RAM option in the CH55xDuino Tools menu.
+The default 148-byte option is not sufficient for the keyboard plus serial
+interface.
+
+## OpenRGB lighting
+
+The firmware enumerates as a USB keyboard plus a CDC serial device. It accepts
+Adalight frames for exactly three LEDs:
+
+```text
+Ada <count high> <count low> <checksum> <R><G><B>...
+```
+
+OpenRGB's built-in serial controller sends the count as `0x0003` for this
+keypad. The checksum is `count high ^ count low ^ 0x55`. The nine RGB bytes
+are sent in LED order, from LED 1 through LED 3.
+
+Use an OpenRGB Adalight-compatible plugin, select the keypad's serial port, set
+the LED count to 3, and use RGB color order. The keyboard interface remains
+available at the same time.
 
 ## Setting up the Keyboard in Bootloader Mode
 
