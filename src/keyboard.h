@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-#define NUM_CONFIGURATION 9
+#define NUM_CONFIGURATION 1
 typedef enum 
 {
   BTN_1,
@@ -97,4 +97,3 @@ void button_menu_up(keyboard_button_keyboard_mode_t mode);
 
 // keyboard menu scroll down
 void button_menu_down(keyboard_button_keyboard_mode_t mode);
-
