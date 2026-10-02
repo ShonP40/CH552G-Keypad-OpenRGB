@@ -27,6 +27,7 @@ volatile __xdata uint8_t UsbConfig;
 __code uint8_t *__data pDescr;
 
 volatile uint8_t usbMsgFlags = 0; // uint8_t usbMsgFlags copied from VUSB
+static __data uint8_t cdc_line_coding_out_s = 0;
 
 inline void NOP_Process(void) {}
 
@@ -56,6 +57,9 @@ void USB_EP0_SETUP() {
       case USB_REQ_TYP_CLASS: {
         switch (SetupReq) {
         case 0x20: // CDC_SET_LINE_CODING
+          cdc_line_coding_out_s = 1;
+          len = 0;
+          break;
         case 0x22: // CDC_SET_CONTROL_LINE_STATE
           len = 0;
           break;
@@ -296,7 +300,11 @@ void USB_EP0_SETUP() {
   } else {
     len = 0xff; // Wrong packet length
   }
-  if (len == 0xff) {
+  if (cdc_line_coding_out_s) {
+    UEP0_T_LEN = 0;
+    UEP0_CTRL = bUEP_R_TOG | bUEP_T_TOG | UEP_R_RES_ACK |
+                UEP_T_RES_NAK;
+  } else if (len == 0xff) {
     SetupReq = 0xFF;
     UEP0_CTRL =
         bUEP_R_TOG | bUEP_T_TOG | UEP_R_RES_STALL | UEP_T_RES_STALL; // STALL
@@ -340,7 +348,12 @@ void USB_EP0_IN() {
 }
 
 void USB_EP0_OUT() {
-  {
+  if (cdc_line_coding_out_s) {
+    cdc_line_coding_out_s = 0;
+    UEP0_T_LEN = 0;
+    UEP0_CTRL = bUEP_R_TOG | bUEP_T_TOG | UEP_R_RES_NAK |
+                UEP_T_RES_ACK;
+  } else {
     UEP0_T_LEN = 0;
     UEP0_CTRL |= UEP_R_RES_ACK | UEP_T_RES_NAK; // Respond Nak
   }
