@@ -52,7 +52,7 @@ void setup()
 
   buttons_setup(PIN_BTN_1, PIN_BTN_2, PIN_BTN_3, PIN_BTN_ENC);
   encoder_setup(ENCODER_A, ENCODER_B);
-  led_set_color_hue(NEO_RED, NEO_RED, NEO_RED);
+  led_set_color_hue(NEO_GREEN, NEO_GREEN, NEO_GREEN, NEO_BRIGHT_KEYS);
   USBInit();
 }
 

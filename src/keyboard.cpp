@@ -22,19 +22,34 @@ const button_function_t button_function_null = {
 static void set_menu_led(void)
 {
 
-  int led_index = current_mode_s % 3;
-  int color_background = (current_mode_s / 3) * 16;
-
-  switch (led_index)
+  switch (current_mode_s)
     {
     case 0:
-      led_set_color_hue(NEO_RED + color_background, NEO_RED + color_background, NEO_RED + color_background);
+      led_set_color_hue(NEO_GREEN, NEO_GREEN, NEO_GREEN, NEO_BRIGHT_KEYS);
       break;
     case 1:
-      led_set_color_hue(NEO_GREEN + color_background, NEO_GREEN + color_background, NEO_GREEN + color_background);
+      led_set_color_hue(NEO_GREEN, NEO_GREEN, NEO_GREEN, NEO_OFF_KEYS);
       break;
     case 2:
-      led_set_color_hue(NEO_BLUE + color_background, NEO_BLUE + color_background, NEO_BLUE + color_background);
+      led_set_color_hue(NEO_BLUE, NEO_BLUE, NEO_BLUE, NEO_BRIGHT_KEYS);
+      break;
+    case 3:
+      led_set_color_hue(NEO_YEL, NEO_YEL, NEO_YEL, NEO_BRIGHT_KEYS);
+      break;
+    case 4:
+      led_set_color_hue(NEO_CYAN, NEO_CYAN, NEO_CYAN, NEO_BRIGHT_KEYS);
+      break;
+    case 5:
+      led_set_color_hue(NEO_MAG, NEO_MAG, NEO_MAG, NEO_BRIGHT_KEYS);
+      break;
+    case 6:
+      led_set_color_hue(NEO_WHITE, NEO_WHITE, NEO_WHITE, NEO_BRIGHT_KEYS);
+      break;
+    case 7:
+      led_set_color_hue(NEO_ORANGE, NEO_ORANGE, NEO_ORANGE, NEO_BRIGHT_KEYS);
+      break;
+    case 8:
+      led_set_color_hue(NEO_RED, NEO_RED, NEO_RED, NEO_BRIGHT_KEYS);
       break;
     default:
       break;
