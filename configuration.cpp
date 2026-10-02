@@ -2,7 +2,7 @@
 #include "src/userUsbHidKeyboardMouse/USBHIDKeyboardMouse.h"
 
 const keyboard_configuration_t configurations[NUM_CONFIGURATION] = {
-    { // Config 1
+    {
         .button = {
             [BTN_1] = {
                 .type = BUTTON_SEQUENCE,
