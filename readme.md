@@ -2,22 +2,9 @@
 
 ## About This Fork
 
-Configuration changes:
-- increased total configurations to 9 (from 4)
-- reworked colors assigned to configurations
-- changing configurations is now done with encoder knob (no need to press it); sadly, this also means the encoder knob cannot be assigned to keys/mouse/etc.
-- each configuration supports 4 buttons (3 main plus encoder button press)
-- 36 (9x4) different button assignments are possible across the 9 configurations
-- default configuration is assigned to (usually) available mappings:
-	- F13, F14, F15, F16 (red)
-	- F17, F18, F19, F20 (green)
-	- F21, F22, F23, F24 (blue)
-	- LCTRL+F13, LCTRL+F14, LCTRL+F15, LCTRL+F16 (orange)
-	- LCTRL+F17, LCTRL+F18, LCTRL+F19, LCTRL+F20 (teal)
-	- LCTRL+F21, LCTRL+F22, LCTRL+F23, LCTRL+F24 (purple)
-	- LALT+F13, LALT+F14, LALT+F15, LALT+F16 (yellow)
-	- LALT+F17, LALT+F18, LALT+F19, LALT+F20 (cyan)
-	- LALT+F21, LALT+F22, LALT+F23, LALT+F24 (magenta)
+- the firmware has one fixed configuration: F16, F17, F18 and F19
+- encoder clockwise and counter-clockwise steps send F20 and F21 respectively
+- the three LEDs retain white-on-press feedback and have independent RGB state
 - all the other features from the original repo's default configuration examples should still work, except for AUTO_KEYBOARD and AUTO_MOUSE
 
 *NOTE: Code space was limited enough that I had to compromise on the configuration. Being able to switch between more buttons (arguably a ridiculous number now!) seemed more useful than the knob as a mappable input, especially since the Arduino doesn't have a way to map it to the media keys (like volume) by default. There are extra libraries that could be used for that, or it could be hard-coded, but given the free space this seemed impossible anyway.*

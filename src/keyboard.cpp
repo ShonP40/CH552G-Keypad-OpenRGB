@@ -4,10 +4,6 @@
 #include "keyboard.h"
 #include "../configuration.h"
 
-static int current_mode_s = 0;                                       // current mode of keyboard
-
-static void set_menu_led(void);
-
 // ===================================================================================
 // create keyboard configuration
 // ===================================================================================
@@ -16,76 +12,14 @@ const button_function_t button_function_null = {
     .type = BUTTON_NULL};
 
 // ===================================================================================
-// Menu section
-// ===================================================================================
-
-static void set_menu_led(void)
-{
-
-  switch (current_mode_s)
-    {
-    case 0:
-      led_set_color_hue(NEO_GREEN, NEO_GREEN, NEO_GREEN, NEO_BRIGHT_KEYS);
-      break;
-    case 1:
-      led_set_color_hue(NEO_GREEN, NEO_GREEN, NEO_GREEN, NEO_OFF_KEYS);
-      break;
-    case 2:
-      led_set_color_hue(NEO_BLUE, NEO_BLUE, NEO_BLUE, NEO_BRIGHT_KEYS);
-      break;
-    case 3:
-      led_set_color_hue(NEO_YEL, NEO_YEL, NEO_YEL, NEO_BRIGHT_KEYS);
-      break;
-    case 4:
-      led_set_color_hue(NEO_CYAN, NEO_CYAN, NEO_CYAN, NEO_BRIGHT_KEYS);
-      break;
-    case 5:
-      led_set_color_hue(NEO_MAG, NEO_MAG, NEO_MAG, NEO_BRIGHT_KEYS);
-      break;
-    case 6:
-      led_set_color_hue(NEO_WHITE, NEO_WHITE, NEO_WHITE, NEO_BRIGHT_KEYS);
-      break;
-    case 7:
-      led_set_color_hue(NEO_ORANGE, NEO_ORANGE, NEO_ORANGE, NEO_BRIGHT_KEYS);
-      break;
-    case 8:
-      led_set_color_hue(NEO_RED, NEO_RED, NEO_RED, NEO_BRIGHT_KEYS);
-      break;
-    default:
-      break;
-    }
-}
-
 void button_menu_up(keyboard_button_keyboard_mode_t mode)
 {
-  if (mode == BTM_CLICK)
-  {
-    if (current_mode_s >= NUM_CONFIGURATION - 1)
-    {
-      current_mode_s = NUM_CONFIGURATION - 1;
-    }
-    else
-    {
-      current_mode_s++;
-    }
-    set_menu_led();
-  }
+  (void)mode;
 }
 
 void button_menu_down(keyboard_button_keyboard_mode_t mode)
 {
-  if (mode == BTM_CLICK)
-  {
-    if (current_mode_s <= 0)
-    {
-      current_mode_s = 0;
-    }
-    else
-    {
-      current_mode_s--;
-    }
-    set_menu_led();
-  }
+  (void)mode;
 }
 
 static void keyboard_run_key_sequence(button_sequence_t sequence, keyboard_button_keyboard_mode_t mode)
@@ -172,16 +106,16 @@ void keyboard_press_button(keyboard_button_t button, keyboard_button_keyboard_mo
     }
   }
 
-  switch (configurations[current_mode_s].button[button].type)
+  switch (configurations[0].button[button].type)
   {
   case BUTTON_SEQUENCE:
-    keyboard_run_key_sequence(configurations[current_mode_s].button[button].function.sequence, mode);
+    keyboard_run_key_sequence(configurations[0].button[button].function.sequence, mode);
     break;
   case BUTTON_MOUSE:
-    keyboard_run_mouse_sequence(configurations[current_mode_s].button[button].function.mouse, mode);
+    keyboard_run_mouse_sequence(configurations[0].button[button].function.mouse, mode);
     break;
   case BUTTON_FUNCTION:
-    configurations[current_mode_s].button[button].function.functionPointer(mode);
+    configurations[0].button[button].function.functionPointer(mode);
     break;
   case BUTTON_NULL:
     break;
