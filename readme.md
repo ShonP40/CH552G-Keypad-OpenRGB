@@ -56,12 +56,12 @@ This firmware uses the Arduino platform to simplify the build process. I built i
 2. Add support for CH552G:
    - Go to Preferences -> Additional Board Manager.
    - Add https://raw.githubusercontent.com/DeqingSun/ch55xduino/ch55xduino/package_ch55xduino_mcs51_index.json.
-3. Open the project `ch552g_mini_keyboard.ino`.
+3. Open the project `CH552G-Keypad-OpenRGB.ino`.
    - In the Tools menu, select CH55xDuino board.
    - In Tools, select bootloader: P3.6 (D+) Pull up.
    - In Tools, select clock source: 16MHz (internal) 3.5V or 5V.
    - In Tools, select upload method: USB.
-   - In Tools, select USB Setting: USER CODE w/148B USB RAM.
+   - In Tools, select USB Setting: USER CODE w/266B USB RAM.
 4. Compile the project.
 5. Set the keyboard in bootloader mode (see below).
 6. Flash the project. (*Original firmware will be completed lost*)
@@ -84,9 +84,24 @@ OpenRGB's built-in serial controller sends the count as `0x0003` for this
 keypad. The checksum is `count high ^ count low ^ 0x55`. The nine RGB bytes
 are sent in LED order, from LED 1 through LED 3.
 
-Use an OpenRGB Adalight-compatible plugin, select the keypad's serial port, set
-the LED count to 3, and use RGB color order. The keyboard interface remains
-available at the same time.
+In OpenRGB, add the keypad through **Manually Added Devices -> Serial Device**:
+
+- Port: the keypad's serial port
+- Baud: `115200`
+- LED count: `3`
+- Protocol: `Adalight`
+
+On macOS, use the `/dev/cu.usbmodem...` port rather than the corresponding
+`/dev/tty.usbmodem...` port when both are available.
+
+The **LED Strip** detector must remain enabled in OpenRGB's detector settings.
+This detector is also responsible for loading manually added Adalight devices.
+Other hardware detectors can be disabled, but disabling **LED Strip** prevents
+the keypad from appearing in the Devices list.
+
+The keyboard interface remains available at the same time. For testing without
+OpenRGB, run `./test_adalight.py <serial-port>` from the repository root and
+press Ctrl+C to stop it.
 
 ## Setting up the Keyboard in Bootloader Mode
 
